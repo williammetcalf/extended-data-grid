@@ -24,7 +24,6 @@ export default function useFilters<T = any>(): [
 
   const setFieldFilter = useCallback(
     (field: string, filter: FieldFilter | null) => {
-      console.log(field, filter);
       if (!filter) {
         const updatedFilters = { ...filters };
         delete updatedFilters[field];
