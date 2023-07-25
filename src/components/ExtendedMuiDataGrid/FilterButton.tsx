@@ -1,6 +1,6 @@
 import { IconButton, Popover } from "@mui/material";
 import { GridFilterAltIcon } from "@mui/x-data-grid";
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import ManageFilters from "./ManageFilters";
 import { FieldFilter } from "./hooks/useFilters";
 

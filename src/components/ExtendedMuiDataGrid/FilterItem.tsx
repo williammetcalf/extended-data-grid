@@ -1,6 +1,6 @@
 import { Button, IconButton, TextField } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import SelectType from "./SelectType";
 import { FilterType } from "./hooks/useFilters";
 import { GridDeleteIcon } from "@mui/x-data-grid";
