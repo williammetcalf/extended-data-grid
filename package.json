@@ -6,7 +6,9 @@
   "module": "dist/esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "rollup": "rollup -c --bundleConfigAsCjs"
+    "rollup": "rollup -c --bundleConfigAsCjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "author": "William Metcalf",
   "license": "ISC",
@@ -15,26 +17,39 @@
     "lodash.orderby": "^4.6.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.22.9",
+    "@babel/preset-react": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@mui/material": "^5.13.4",
-    "@mui/x-data-grid": "^6.6.0",
+    "@mui/material": "^5.14.2",
+    "@mui/x-data-grid": "^6.10.1",
     "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@rollup/plugin-typescript": "^11.1.1",
+    "@storybook/addon-essentials": "^7.1.1",
+    "@storybook/addon-interactions": "^7.1.1",
+    "@storybook/addon-links": "^7.1.1",
+    "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/blocks": "^7.1.1",
+    "@storybook/react": "^7.1.1",
+    "@storybook/react-webpack5": "^7.1.1",
+    "@storybook/testing-library": "^0.2.0",
     "@types/lodash.orderby": "^4.6.7",
     "@types/node": "^20.2.5",
     "@types/react": "^18.2.9",
     "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "rollup": "^3.24.0",
     "rollup-plugin-dts": "^5.3.0",
+    "storybook": "^7.1.1",
     "tslib": "^2.5.3",
     "typescript": "^5.1.3"
   },
   "peerDependencies": {
     "@mui/x-data-grid": "^6.6.0",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
   },
   "files": [
     "dist"
