@@ -49,13 +49,19 @@ const ManageFilters: FC<ManageFiltersProps> = (props) => {
       )}
       {filters?.filters.map((filter, idx) => (
         <FilterItem
-          key={idx}
+          key={filter.id}
           type={filter.type}
           value={filter.value}
           autoSave
+          onDelete={() => {
+            onChange({
+              ...filters,
+              filters: filters.filters.filter((f) => f !== filter),
+            });
+          }}
           onChange={debounce((type, value) => {
             const updatedFilters = [...filters.filters];
-            updatedFilters[idx] = { type, value };
+            updatedFilters[idx] = { ...filter, type, value };
             onChange({ ...filters, filters: updatedFilters });
           }, 1000)}
         />
@@ -72,9 +78,15 @@ const ManageFilters: FC<ManageFiltersProps> = (props) => {
             filters
               ? {
                   multiFilterOperator: filters.multiFilterOperator,
-                  filters: [...filters.filters, { type, value }],
+                  filters: [
+                    ...filters.filters,
+                    { type, value, id: `${Math.random()}` },
+                  ],
                 }
-              : { multiFilterOperator: "or", filters: [{ type, value }] }
+              : {
+                  multiFilterOperator: "or",
+                  filters: [{ type, value, id: `${Math.random()}` }],
+                }
           );
         }}
       />

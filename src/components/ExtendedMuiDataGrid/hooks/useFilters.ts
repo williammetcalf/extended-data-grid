@@ -4,7 +4,7 @@ export type FilterType = "contains" | "startsWith";
 export type FieldFilters<T> = Partial<Record<keyof T, FieldFilter>>;
 export interface FieldFilter {
   multiFilterOperator: "or" | "and";
-  filters: { type: FilterType; value: string }[];
+  filters: { type: FilterType; value: string; id: string }[];
 }
 
 const filterFns: Record<
@@ -21,7 +21,6 @@ export default function useFilters<T = any>(): [
   (data: T[]) => T[]
 ] {
   const [filters, setFilters] = useState<FieldFilters<T>>({});
-  console.log("Filters:", filters);
 
   const setFieldFilter = useCallback(
     (field: string, filter: FieldFilter | null) => {

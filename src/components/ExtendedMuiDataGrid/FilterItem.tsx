@@ -1,25 +1,27 @@
-import { Button, TextField } from "@mui/material";
+import { Button, IconButton, TextField } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { FC, useState } from "react";
 import SelectType from "./SelectType";
 import { FilterType } from "./hooks/useFilters";
+import { GridDeleteIcon } from "@mui/x-data-grid";
 
 export interface FilterItemProps {
   type: FilterType;
   value: string;
   onChange: (type: FilterType, value: string) => void;
+  onDelete?: () => void;
   enableDelete?: boolean;
   autoSave?: boolean;
 }
 
 const FilterItem: FC<FilterItemProps> = (props) => {
-  const { type, value, onChange, autoSave } = props;
+  const { type, value, onChange, onDelete, autoSave } = props;
   const [updatedType, setUpdatedType] = useState(type);
   const [updatedValue, setUpdatedValue] = useState(value);
 
   return (
-    <Grid2 container spacing={1}>
-      <Grid2 xs={5}>
+    <Grid2 container spacing={1} alignItems="center">
+      <Grid2 xs={autoSave ? 4 : 5}>
         <SelectType
           value={updatedType}
           onChange={(e) => {
@@ -41,6 +43,13 @@ const FilterItem: FC<FilterItemProps> = (props) => {
           }}
         />
       </Grid2>
+      {autoSave && (
+        <Grid2 xs={1}>
+          <IconButton size="small" color="error" onClick={onDelete}>
+            <GridDeleteIcon />
+          </IconButton>
+        </Grid2>
+      )}
       {!autoSave && (
         <Grid2 xs={12}>
           <Button
