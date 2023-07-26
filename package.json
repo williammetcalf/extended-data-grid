@@ -1,13 +1,14 @@
 {
   "name": "extended-mui-data-grid",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "An extended version of the MUI Data Grid component",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "rollup": "rollup -c",
+    "clean": "rimraf lib",
+    "rollup": "npm run clean && rollup -c",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

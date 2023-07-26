@@ -1,70 +1,52 @@
-import { Box, ButtonBase, styled } from "@mui/material";
 import {
   DataGrid,
   DataGridProps,
-  GridColDef,
-  GridColumnHeaderParams,
+  GridInputRowSelectionModel,
+  GridValidRowModel,
 } from "@mui/x-data-grid";
 import orderBy from "lodash.orderby";
-import React, { FC, useMemo } from "react";
-import FilterButton from "./FilterButton";
-import SortIcon from "./SortIcon";
+import React, { useMemo, useRef, useState } from "react";
+import { serializeRow as defaultSerializeRow } from "../../lib";
 import useFilters from "./hooks/useFilters";
+import useModifiedColumns from "./hooks/useModifiedColumns";
+import useRowCopyListener from "./hooks/useRowCopyListener";
 import useSortOrder from "./hooks/useSortOrder";
-
-export interface ExtendedDataGridProps
+export interface ExtendedDataGridProps<T extends GridValidRowModel>
   extends Omit<
-    DataGridProps,
+    DataGridProps<T>,
     "sortModel" | "sortingOrder" | "sortingMode" | "onSortModelChange"
-  > {}
+  > {
+  serializeRow?: (row: T, idx: number) => string;
+  deserializeRow?: (serialized: string) => T;
+  enableRowCopy?: boolean;
+  onRowsCopied?: (rows: T[], serializedRows: string) => void;
+}
 
-const ExtendedDataGrid: FC<ExtendedDataGridProps> = (props) => {
-  const { columns, rows, ...rest } = props;
+function ExtendedDataGrid<T extends GridValidRowModel>(
+  props: ExtendedDataGridProps<T>
+) {
+  const {
+    columns,
+    rows,
+    serializeRow = defaultSerializeRow,
+    deserializeRow,
+    enableRowCopy,
+    onRowsCopied,
+    ...rest
+  } = props;
+  const ref = useRef<HTMLDivElement>(null);
   const [sortOrder, incrementFieldSortOrder] = useSortOrder();
   const [filters, setFieldFilters, filterData] = useFilters();
-  const modifiedColumns = useMemo(() => {
-    const ColumnSortedAscendingIcon = props.slots?.columnSortedAscendingIcon;
-    const ColumnSortedDescendingIcon = props.slots?.columnSortedDescendingIcon;
-
-    return columns.map<GridColDef>((column) => ({
-      ...column,
-      sortable: false,
-      filterable: false,
-      renderHeader: (params) => {
-        const columnSortOrder = sortOrder.find(
-          (fieldSort) => fieldSort.field === column.field
-        );
-        const columnFilters = filters[column.field];
-        const renderHeader = (params: GridColumnHeaderParams<any, any, any>) =>
-          column.renderHeader
-            ? column.renderHeader(params)
-            : column.headerName || column.field;
-        return (
-          <HideUntilHoverHost>
-            {column.sortable ? (
-              <ButtonBase onClick={() => incrementFieldSortOrder(column.field)}>
-                {renderHeader(params)}
-                <SortIcon
-                  columnSortOrder={columnSortOrder}
-                  ColumnSortedAscendingIcon={ColumnSortedAscendingIcon}
-                  ColumnSortedDescendingIcon={ColumnSortedDescendingIcon}
-                />
-              </ButtonBase>
-            ) : (
-              renderHeader(params)
-            )}
-            {column.filterable && (
-              <FilterButton
-                filters={columnFilters}
-                onChange={(filters) => setFieldFilters(column.field, filters)}
-              />
-            )}
-          </HideUntilHoverHost>
-        );
-      },
-    }));
-  }, [columns, sortOrder, filters]);
-
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridInputRowSelectionModel>(props.rowSelectionModel || []);
+  const modifiedColumns = useModifiedColumns({
+    columns,
+    filters,
+    incrementFieldSortOrder,
+    setFieldFilters,
+    sortOrder,
+    slots: props.slots,
+  });
   const sortedRows = useMemo(() => {
     return orderBy(
       filterData([...rows]),
@@ -72,15 +54,26 @@ const ExtendedDataGrid: FC<ExtendedDataGridProps> = (props) => {
       sortOrder.map(({ order }) => order)
     );
   }, [rows, sortOrder, filterData]);
+  useRowCopyListener({
+    enableRowCopy,
+    rows,
+    rowSelectionModel,
+    serializeRow,
+    containerRef: ref,
+    onRowsCopied,
+  });
 
-  return <DataGrid {...rest} columns={modifiedColumns} rows={sortedRows} />;
-};
-
-const HideUntilHoverHost = styled(Box)({
-  display: "flex",
-  alignItems: "center",
-  "& .hide-until-hover": { opacity: 0 },
-  "&:hover .hide-until-hover": { opacity: 0.2 },
-});
+  return (
+    <div tabIndex={0} ref={ref}>
+      <DataGrid
+        {...rest}
+        columns={modifiedColumns}
+        rows={sortedRows}
+        onRowSelectionModelChange={setRowSelectionModel}
+        rowSelectionModel={rowSelectionModel}
+      />
+    </div>
+  );
+}
 
 export default ExtendedDataGrid;

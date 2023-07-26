@@ -20,5 +20,5 @@
     "noImplicitAny": false
   },
   "include": ["src"],
-  "exclude": ["node_modules", "lib"]
+  "exclude": ["node_modules", "lib", "src/stories", ".storybook"]
 }
