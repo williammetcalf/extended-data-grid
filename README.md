@@ -103,3 +103,45 @@ const MyComponent: FC = () => {
 ```
 
 </details>
+
+<summary>Paste Row Data</summary>
+
+[comparable MUI X feature](https://mui.com/x/react-data-grid/clipboard/#clipboard-paste)
+
+Currently only supports full new row pasting, not pasting edits into an existing row
+
+```tsx
+import { ExtendedDataGrid, serializeRow } from "extended-mui-data-grid";
+
+const data = new Array(100).fill(null).map((_, idx) => ({
+  name: `Column ${idx}`,
+  someOtherField: `Value ${idx % 13}`,
+  id: `${idx}`,
+}));
+
+const MyComponent: FC = () => {
+  const [rows, setRows] = useState(data);
+
+  return (
+    <ExtendedDataGrid
+      enableRowCopy
+      enableRowPaste
+      onValidRowsPasted={(newRows) => {
+        // presumably this gets sent to an api
+        const savedRows = newRows.map((r) => ({ ...r, id: Math.random() }));
+        setRows([...rows, ...savedRows]);
+        return Promise.resolve(savedRows);
+      }}
+      onRowsCopied={(rows, serializedRows) => alert(serializedRows)}
+      rows={rows}
+      columns={[
+        { field: "id" },
+        { field: "name" },
+        { field: "someOtherField" },
+      ]}
+    />
+  );
+};
+```
+
+</details>

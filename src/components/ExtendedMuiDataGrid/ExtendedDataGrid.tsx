@@ -5,12 +5,15 @@ import {
   GridValidRowModel,
 } from "@mui/x-data-grid";
 import orderBy from "lodash.orderby";
+import { unparse } from "papaparse";
 import React, { useMemo, useRef, useState } from "react";
-import { serializeRow as defaultSerializeRow } from "../../lib";
+import defaultDeserializeRows from "./defaultDeserializeRows";
 import useFilters from "./hooks/useFilters";
 import useModifiedColumns from "./hooks/useModifiedColumns";
 import useRowCopyListener from "./hooks/useRowCopyListener";
+import useRowPasteListener from "./hooks/useRowPasteListener";
 import useSortOrder from "./hooks/useSortOrder";
+import defaultValidateDeserializedRows from "./defaultValidateDeserializedRows";
 export interface ExtendedDataGridProps<T extends GridValidRowModel>
   extends Omit<
     DataGridProps<T>,
@@ -19,33 +22,40 @@ export interface ExtendedDataGridProps<T extends GridValidRowModel>
   /**Enable copying the selected row(s) to the clipboard when ctrl+c is pressed.  */
   enableRowCopy?: boolean;
   /** Serializing function to be used when copying row data. If not specified copied data will be in a csv format.*/
-  serializeRow?: (row: T, idx: number) => string;
-  /**
-   * Delimeter used when serializing multiple rows when copying row data
-   * @default \n
-   */
-  serializeRowDelimeter?: string;
-  deserializeRow?: (serialized: string) => T;
+  serializeRows?: (rows: T[]) => string;
   /** Function called with the selected rows and serialized data when rows are copied. */
   onRowsCopied?: (rows: T[], serializedRows: string) => void;
+  enableClipboardPaste?: boolean;
+  deserializeRows?: (serialized: string) => T;
+  validateDeserializedRows?: (deserializedRows: any) => deserializedRows is T[];
+  /**
+   * Callback called before updating a row with new values in the row and cell editing.
+   * @template R
+   * @param {R} newRow Row object with the new values.
+   * @param {T|null} originalRow - Row object with the new values or null if it's a new row.
+   * @returns {Promise<R> | R} The final values to update the row.
+   */
+  onValidRowsPasted?: (rows: T[]) => Promise<T[]>;
+  onRowPasteValidationFailed?: (
+    serializedRows: string,
+    deserializedRows: any
+  ) => any;
 }
 
-/**
- *
- * @param props
- * @returns
- */
 function ExtendedDataGrid<T extends GridValidRowModel>(
   props: ExtendedDataGridProps<T>
 ) {
   const {
     columns,
     rows,
-    serializeRow = defaultSerializeRow,
-    deserializeRow,
+    serializeRows = unparse,
     enableRowCopy,
     onRowsCopied,
-    serializeRowDelimeter = "\n",
+    enableClipboardPaste,
+    deserializeRows = defaultDeserializeRows,
+    validateDeserializedRows = defaultValidateDeserializedRows,
+    onValidRowsPasted,
+    onRowPasteValidationFailed,
     ...rest
   } = props;
   const ref = useRef<HTMLDivElement>(null);
@@ -72,10 +82,17 @@ function ExtendedDataGrid<T extends GridValidRowModel>(
     enableRowCopy,
     rows,
     rowSelectionModel,
-    serializeRow,
+    serializeRows,
     containerRef: ref,
     onRowsCopied,
-    serializeRowDelimeter,
+  });
+  useRowPasteListener({
+    deserializeRows,
+    enableClipboardPaste,
+    validateDeserializedRows,
+    containerRef: ref,
+    onValidRowsPasted,
+    onRowPasteValidationFailed,
   });
 
   return (

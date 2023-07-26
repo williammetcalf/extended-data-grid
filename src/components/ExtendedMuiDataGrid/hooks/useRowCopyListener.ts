@@ -5,19 +5,17 @@ export default function useRowCopyListener<T>(params: {
   enableRowCopy?: boolean;
   rowSelectionModel: GridInputRowSelectionModel;
   rows: readonly T[];
-  serializeRow: (row: T, idx: number) => string;
+  serializeRows: (rows: T[]) => string;
   containerRef?: RefObject<HTMLDivElement>;
   onRowsCopied?: (rows: T[], serializedRows: string) => void;
-  serializeRowDelimeter: string;
 }) {
   const {
     enableRowCopy,
     rowSelectionModel,
     rows,
-    serializeRow,
+    serializeRows,
     containerRef: tableRef,
     onRowsCopied,
-    serializeRowDelimeter,
   } = params;
 
   useEffect(() => {
@@ -31,9 +29,7 @@ export default function useRowCopyListener<T>(params: {
         ? rowSelectionModel
         : [rowSelectionModel];
       const selectedRows = selectedRowIds.map<T>((idx) => rows[idx]);
-      const serializedRows = selectedRows
-        .map(serializeRow)
-        .join(serializeRowDelimeter);
+      const serializedRows = serializeRows(selectedRows);
       try {
         await navigator.clipboard.writeText(serializedRows);
         onRowsCopied && onRowsCopied(selectedRows, serializedRows);
@@ -41,17 +37,17 @@ export default function useRowCopyListener<T>(params: {
         console.error(err);
       }
     };
-    document.addEventListener("keydown", cb, true);
+
+    document.addEventListener("keydown", cb);
     return () => {
-      document.removeEventListener("keydown", cb, true);
+      document.removeEventListener("keydown", cb);
     };
   }, [
     rowSelectionModel,
     rows,
-    serializeRow,
+    serializeRows,
     enableRowCopy,
     tableRef,
     onRowsCopied,
-    serializeRowDelimeter,
   ]);
 }
