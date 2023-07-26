@@ -4,22 +4,29 @@ This library contains an extended version of the [MUI X Data Grid](https://mui.c
 
 ## Supported Paid Features
 
-- multiple column sorting [mui doc](https://mui.com/x/react-data-grid/sorting/#multi-sorting)
 <details>
-<summary>Example</summary>
+<summary>Multiple Column Sorting</summary>
+
+[comparable MUI X feature](https://mui.com/x/react-data-grid/sorting/#multi-sorting)
 
 ```tsx
 import { ExtendedDataGrid } from "extended-mui-data-grid";
 
-const data = new Array(100)
-  .fill(null)
-  .map((_, idx) => ({ name: `Column ${idx}`, id: `${idx}` }));
+const data = new Array(100).fill(null).map((_, idx) => ({
+  name: `Column ${idx}`,
+  someOtherField: `Value ${idx % 13}`,
+  id: `${idx}`,
+}));
 
 const MyComponent: FC = () => {
   return (
     <ExtendedDataGrid
       rows={data}
-      columns={[{ field: "id" }, { field: "name", sortable: true }]}
+      columns={[
+        { field: "id" },
+        { field: "name", sortable: true },
+        { field: "someOtherField", sortable: true },
+      ]}
     />
   );
 };
@@ -27,5 +34,70 @@ const MyComponent: FC = () => {
 
 </details>
 
-- multiple column filtering with multiple concurrent filters on a given column [mui doc](https://mui.com/x/react-data-grid/filtering/multi-filters/)
-- copy row data (currently only single row selection supported) [mui doc](https://mui.com/x/react-data-grid/clipboard/#clipboard-copy)
+<details>
+<summary>Multiple Column Filtering</summary>
+
+[comparable MUI X feature](https://mui.com/x/react-data-grid/filtering/multi-filters/)
+
+```tsx
+import { ExtendedDataGrid } from "extended-mui-data-grid";
+
+const data = new Array(100).fill(null).map((_, idx) => ({
+  name: `Column ${idx}`,
+  someOtherField: `Value ${idx % 13}`,
+  id: `${idx}`,
+}));
+
+const MyComponent: FC = () => {
+  return (
+    <ExtendedDataGrid
+      rows={data}
+      columns={[
+        { field: "id" },
+        { field: "name", filterable: true },
+        { field: "someOtherField", filterable: true },
+      ]}
+    />
+  );
+};
+```
+
+</details>
+
+<details>
+<summary>Copy Row Data</summary>
+
+[comparable MUI X feature](https://mui.com/x/react-data-grid/clipboard/#clipboard-copy)
+
+```tsx
+import { ExtendedDataGrid, serializeRow } from "extended-mui-data-grid";
+
+const data = new Array(100).fill(null).map((_, idx) => ({
+  name: `Column ${idx}`,
+  someOtherField: `Value ${idx % 13}`,
+  id: `${idx}`,
+}));
+
+const MyComponent: FC = () => {
+  return (
+    <ExtendedDataGrid
+      enableRowCopy
+      onRowsCopied={(rows, serializedRows) => alert(serializedRows)}
+      /**
+       * optional, can use a custom serializing function to convert the selected
+       * row(s) to a string. The default function (serializeRow) will convert the
+       * row(s) to a csv-like string.
+       */
+      serializeRow={(row, idx) => serializeRow(row, idx)}
+      rows={data}
+      columns={[
+        { field: "id" },
+        { field: "name" },
+        { field: "someOtherField" },
+      ]}
+    />
+  );
+};
+```
+
+</details>

@@ -16,9 +16,12 @@ export interface ExtendedDataGridProps<T extends GridValidRowModel>
     DataGridProps<T>,
     "sortModel" | "sortingOrder" | "sortingMode" | "onSortModelChange"
   > {
+  /**Enable copying the selected row(s) to the clipboard when ctrl+c is pressed.  */
+  enableRowCopy?: boolean;
+  /** Serializing function to be used when copying row data. If not specified copied data will be in a csv format.*/
   serializeRow?: (row: T, idx: number) => string;
   deserializeRow?: (serialized: string) => T;
-  enableRowCopy?: boolean;
+  /** Function called with the selected rows and serialized data when rows are copied. */
   onRowsCopied?: (rows: T[], serializedRows: string) => void;
 }
 
