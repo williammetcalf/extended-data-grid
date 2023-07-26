@@ -1,6 +1,6 @@
 {
   "name": "extended-mui-data-grid",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "description": "An extended version of the MUI Data Grid component",
   "repository": "https://github.com/williammetcalf/extended-data-grid",
   "main": "lib/index.js",

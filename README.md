@@ -104,6 +104,7 @@ const MyComponent: FC = () => {
 
 </details>
 
+<details>
 <summary>Paste Row Data</summary>
 
 [comparable MUI X feature](https://mui.com/x/react-data-grid/clipboard/#clipboard-paste)
@@ -145,3 +146,29 @@ const MyComponent: FC = () => {
 ```
 
 </details>
+
+## Properties
+
+Unless otherwise specified, `<ExtendedDataGrid />` supports all of the same props that the base `<DataGrid />` accepts.
+
+### Disabled Base `<DataGrid />` Props
+
+| Prop                |
+| ------------------- |
+| `sortModel`         |
+| `sortingOrder`      |
+| `sortingMode`       |
+| `onSortModelChange` |
+
+### Additional `<ExtendedDataGrid />` Props
+
+| Prop                         | Default                                   | Description                                                                                                                                                                                                                                 |
+| ---------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enableRowCopy`              | `false`                                   | If true, the selected row will be copied to the user's clipboard when ctrl+c is pressed                                                                                                                                                     |
+| `serializeRows`              | `papaparse.unparse`                       | When copying row(s), this function is ran to serialize the data to a string                                                                                                                                                                 |
+| `onRowsCopied`               |                                           | Callback called after rows are copied with the raw and serialized data                                                                                                                                                                      |
+| `enableClipboardPaste`       | `false`                                   | If true, clipboard data will be attempted to be inserted into the table when ctrl+v is pressed                                                                                                                                              |
+| `deserializeRows`            | `papaparse.parse`                         | When pasting row(s), this function is ran to attempt to deserialize string data into the table row data format                                                                                                                              |
+| `validateDeserializedRows`   | `() => true`                              | When pasting row(s), this function is ran after deserializing clipboard data. If it returns true the data will be added into the table                                                                                                      |
+| `onValidRowsPasted`          | required if `enableClipboardPaste = true` | When pasting row(s), this function is ran after the deserialized clipboard data is validated. Pasted rows aren't directly added to the table, use this function to add the new rows into the table state in whatever manner is appropriate. |
+| `onRowPasteValidationFailed` |                                           | When pasting row(s), if `validateDeserializedRows` returns `false`, this function is called with the deserialized data.                                                                                                                     |
