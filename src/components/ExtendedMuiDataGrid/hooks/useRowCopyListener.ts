@@ -8,6 +8,7 @@ export default function useRowCopyListener<T>(params: {
   serializeRow: (row: T, idx: number) => string;
   containerRef?: RefObject<HTMLDivElement>;
   onRowsCopied?: (rows: T[], serializedRows: string) => void;
+  serializeRowDelimeter: string;
 }) {
   const {
     enableRowCopy,
@@ -16,6 +17,7 @@ export default function useRowCopyListener<T>(params: {
     serializeRow,
     containerRef: tableRef,
     onRowsCopied,
+    serializeRowDelimeter,
   } = params;
 
   useEffect(() => {
@@ -29,7 +31,9 @@ export default function useRowCopyListener<T>(params: {
         ? rowSelectionModel
         : [rowSelectionModel];
       const selectedRows = selectedRowIds.map<T>((idx) => rows[idx]);
-      const serializedRows = selectedRows.map(serializeRow).join("\n");
+      const serializedRows = selectedRows
+        .map(serializeRow)
+        .join(serializeRowDelimeter);
       try {
         await navigator.clipboard.writeText(serializedRows);
         onRowsCopied && onRowsCopied(selectedRows, serializedRows);
@@ -48,5 +52,6 @@ export default function useRowCopyListener<T>(params: {
     enableRowCopy,
     tableRef,
     onRowsCopied,
+    serializeRowDelimeter,
   ]);
 }

@@ -66,8 +66,9 @@ const MyComponent: FC = () => {
 
 <details>
 <summary>Copy Row Data</summary>
-
 [comparable MUI X feature](https://mui.com/x/react-data-grid/clipboard/#clipboard-copy)
+
+Currently only supports single row selection/copying.
 
 ```tsx
 import { ExtendedDataGrid, serializeRow } from "extended-mui-data-grid";

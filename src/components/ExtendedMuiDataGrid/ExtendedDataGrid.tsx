@@ -20,11 +20,21 @@ export interface ExtendedDataGridProps<T extends GridValidRowModel>
   enableRowCopy?: boolean;
   /** Serializing function to be used when copying row data. If not specified copied data will be in a csv format.*/
   serializeRow?: (row: T, idx: number) => string;
+  /**
+   * Delimeter used when serializing multiple rows when copying row data
+   * @default \n
+   */
+  serializeRowDelimeter?: string;
   deserializeRow?: (serialized: string) => T;
   /** Function called with the selected rows and serialized data when rows are copied. */
   onRowsCopied?: (rows: T[], serializedRows: string) => void;
 }
 
+/**
+ *
+ * @param props
+ * @returns
+ */
 function ExtendedDataGrid<T extends GridValidRowModel>(
   props: ExtendedDataGridProps<T>
 ) {
@@ -35,6 +45,7 @@ function ExtendedDataGrid<T extends GridValidRowModel>(
     deserializeRow,
     enableRowCopy,
     onRowsCopied,
+    serializeRowDelimeter = "\n",
     ...rest
   } = props;
   const ref = useRef<HTMLDivElement>(null);
@@ -64,6 +75,7 @@ function ExtendedDataGrid<T extends GridValidRowModel>(
     serializeRow,
     containerRef: ref,
     onRowsCopied,
+    serializeRowDelimeter,
   });
 
   return (
