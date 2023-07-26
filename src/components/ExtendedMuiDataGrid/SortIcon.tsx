@@ -3,7 +3,7 @@ import {
   GridArrowUpwardIcon,
   GridSlotsComponent,
 } from "@mui/x-data-grid";
-import { FC } from "react";
+import React, { FC } from "react";
 import { SortOrderField } from "./hooks/useSortOrder";
 
 export interface SortIconProps {

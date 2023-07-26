@@ -6,7 +6,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { FC } from "react";
+import React, { FC } from "react";
 
 export interface HeaderProps {
   filterCount: number;

@@ -1,20 +1,9 @@
-import {
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-  styled,
-} from "@mui/material";
+import { Divider, Stack, Typography, styled } from "@mui/material";
 import debounce from "lodash.debounce";
-import { FC } from "react";
+import React, { FC } from "react";
 import FilterItem from "../FilterItem";
-import Header from "./Header";
 import { FieldFilter } from "../hooks/useFilters";
+import Header from "./Header";
 
 export interface ManageFiltersProps {
   filters?: FieldFilter;

@@ -6,7 +6,7 @@ import {
   GridColumnHeaderParams,
 } from "@mui/x-data-grid";
 import orderBy from "lodash.orderby";
-import { FC, useMemo } from "react";
+import React, { FC, useMemo } from "react";
 import FilterButton from "./FilterButton";
 import SortIcon from "./SortIcon";
 import useFilters from "./hooks/useFilters";
